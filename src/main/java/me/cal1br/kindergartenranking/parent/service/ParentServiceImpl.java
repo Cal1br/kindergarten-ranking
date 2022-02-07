@@ -1,4 +1,4 @@
 package me.cal1br.kindergartenranking.parent.service;
 
-public class ParentServiceImpl {
+public class ParentServiceImpl implements ParentService {
 }
