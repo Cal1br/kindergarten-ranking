@@ -1,9 +1,11 @@
 package me.cal1br.kindergartenranking.administrator.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class BaseModel {
-    private final Long id;
-    private final String name;
+@EqualsAndHashCode
+public abstract class BaseModel {
+    private Long id;
+    private String name;
 }

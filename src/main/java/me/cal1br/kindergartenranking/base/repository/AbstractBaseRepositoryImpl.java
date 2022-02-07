@@ -41,15 +41,30 @@ public abstract class AbstractBaseRepositoryImpl<T extends BaseModel> implements
         return idCount++; //post-increment, thus it returns the correct id
     }
 
+
+    /**
+     * Edits the model by a given id. Does a call to {@link #verifyModel(T)}
+     *
+     * @return the old model that was replaced.
+     * @throws InvalidInputException if id doesn't exist
+     * @throws InvalidModelException if model doesn't pass verification
+     */
     @Override
-    public boolean editById(final Long id, final T model) {
-        return false;
+    public T editById(final Long id, final T updatedModel) {
+        if (!verifyModel(updatedModel)) {
+            throw new InvalidModelException("Invalid model");
+        }
+        if (!this.databaseDummy.containsKey(id)) {
+            throw new InvalidInputException("Id doesn't exist");
+        }
+        return this.databaseDummy.put(id, updatedModel);
     }
 
     /**
      * Used to verify a model. Clients of this class can get access to the entries
      * in the database with {@link #getDatabaseDummy()}
      *
+     * @param model the model to be verified.
      * @return return false if model is invalid, true if it is valid.
      */
     protected abstract boolean verifyModel(T model);
@@ -59,7 +74,7 @@ public abstract class AbstractBaseRepositoryImpl<T extends BaseModel> implements
      *
      * @return returns a wrapped reference to the database, that has input methods disabled.
      */
-    protected Map<Long, T> getDatabaseDummy() {
+    protected final Map<Long, T> getDatabaseDummy() {
         return Collections.unmodifiableMap(this.databaseDummy);
     }
 }

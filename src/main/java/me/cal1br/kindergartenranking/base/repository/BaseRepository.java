@@ -11,6 +11,6 @@ public interface BaseRepository<T extends BaseModel> {
 
     long save(final T model);
 
-    boolean editById(Long id, T model);
+    T editById(Long id, T model);
 
 }
