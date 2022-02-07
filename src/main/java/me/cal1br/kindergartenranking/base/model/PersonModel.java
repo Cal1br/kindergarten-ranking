@@ -1,12 +1,13 @@
 package me.cal1br.kindergartenranking.base.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import me.cal1br.kindergartenranking.administrator.model.BaseModel;
 
 import java.time.LocalDateTime;
 
 @Data
-public class PersonModel {
-    private long id;
-    private String name;
+@EqualsAndHashCode(callSuper = true)
+public abstract class PersonModel extends BaseModel {
     private LocalDateTime dateOfBirth;
 }
