@@ -12,6 +12,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class ChildModel extends PersonModel {
     private boolean isDisabled;
-    private List<KindergartenModel> wishList;
     private List<ParentModel> parents;
+    private List<KindergartenModel> wishList;
 }

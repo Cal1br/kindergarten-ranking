@@ -18,6 +18,5 @@ public class ChildRepositoryImpl extends AbstractBaseRepositoryImpl<ChildModel> 
         return this.getDatabaseDummy().values().parallelStream().filter(
                 potentialTwin -> potentialTwin.getDateOfBirth().equals(child.getDateOfBirth()) &&
                         potentialTwin.getParents().equals(child.getParents())).collect(Collectors.toList());
-        //TODO maybe make helper class family which contains List<Parents> and List<Children>
     }
 }
