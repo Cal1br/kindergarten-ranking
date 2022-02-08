@@ -6,15 +6,25 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import me.cal1br.kindergartenranking.child.model.ChildModel;
+import me.cal1br.kindergartenranking.child.repository.ChildRepository;
+import me.cal1br.kindergartenranking.child.repository.ChildRepositoryImpl;
 import me.cal1br.kindergartenranking.kindergarten.model.KindergartenModel;
+import me.cal1br.kindergartenranking.kindergarten.repository.KindergartenRepository;
+import me.cal1br.kindergartenranking.kindergarten.repository.KindergartenRepositoryImpl;
+import me.cal1br.kindergartenranking.kindergarten.service.KindergartenService;
+import me.cal1br.kindergartenranking.kindergarten.service.KindergartenServiceImpl;
+import me.cal1br.kindergartenranking.parent.repository.ParentRepository;
+import me.cal1br.kindergartenranking.parent.repository.ParentRepositoryImpl;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 public class wishlistSteps {
 
     private final ChildModel child = new ChildModel();
-    private final Set<KindergartenModel> wishList = new HashSet<>();
+    private final List<KindergartenModel> wishList = new LinkedList<>();
+    private KindergartenService kindergartenService;
 
     @Before
     public void setUp() {
@@ -26,6 +36,12 @@ public class wishlistSteps {
         kindergarten1.setPlaces(5);
         wishList.add(kindergarten0);
         wishList.add(kindergarten1);
+        final KindergartenRepository kindergartenRepository = new KindergartenRepositoryImpl();
+        final ChildRepository childRepository = new ChildRepositoryImpl();
+        kindergartenRepository.save(kindergarten0);
+        kindergartenRepository.save(kindergarten1);
+        final ParentRepository parentRepository = new ParentRepositoryImpl();
+        kindergartenService = new KindergartenServiceImpl(parentRepository, childRepository, kindergartenRepository);
     }
 
     @Given("^Child has wishlist$")
@@ -36,7 +52,7 @@ public class wishlistSteps {
 
     @When("^Ranking is processed$")
     public void rankingIsProcessed() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
+        kindergartenService.rankChildren(kindergartenService.findAll(), Collections.singletonList(child));
         throw new PendingException();
     }
 

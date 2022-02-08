@@ -7,14 +7,11 @@ import me.cal1br.kindergartenranking.kindergarten.model.KindergartenModel;
 import me.cal1br.kindergartenranking.parent.model.ParentModel;
 
 import java.util.List;
-import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ChildModel extends PersonModel {
     private boolean isDisabled = false;
     private List<ParentModel> parents;
-    private Set<KindergartenModel> wishList;
-
-
+    private List<KindergartenModel> wishList;
 }

@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface KindergartenRepository extends BaseRepository<KindergartenModel> {
     List<ChildModel> getSiblingsOf(long id, ChildModel child);
+    List<KindergartenModel> getAll();
 }
