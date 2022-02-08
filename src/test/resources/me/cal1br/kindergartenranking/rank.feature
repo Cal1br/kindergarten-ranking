@@ -1,3 +1,4 @@
-#TODO
-Feature: Ranking of children TODO
-    Scenario:
+Feature: Ranking of children
+
+  Scenario: Several children are ranked
+  When
