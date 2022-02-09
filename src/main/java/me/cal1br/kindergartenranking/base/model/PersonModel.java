@@ -9,5 +9,6 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public abstract class PersonModel extends BaseModel {
+    @EqualsAndHashCode.Include
     private LocalDateTime dateOfBirth;
 }

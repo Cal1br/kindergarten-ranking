@@ -7,6 +7,7 @@ import me.cal1br.kindergartenranking.kindergarten.repository.KindergartenReposit
 import me.cal1br.kindergartenranking.parent.model.ParentModel;
 import me.cal1br.kindergartenranking.parent.repository.ParentRepository;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,14 +27,13 @@ public class KindergartenServiceImpl implements KindergartenService {
 
     @Override
     public Map<KindergartenModel, List<ChildModel>> rankChildren(final List<KindergartenModel> kindergartenList, final List<ChildModel> childList) {
+        final List<ChildModel> filteredChildren = childList.stream().filter(child -> !child.getWishList().isEmpty()).collect(Collectors.toList());
         final Map<KindergartenModel, List<ChildModel>> rankedChildren = new HashMap<>();
         final List<ChildModel> leftoverChildren = new LinkedList<>(); // kicknati които влизат отново в класирането
         do {
             leftoverChildren.clear();
             kindergartenList.forEach(kindergarten -> {
-                final List<ChildModel> childrenForThisGarden = childList.stream()
-                        .filter(child -> child.getWishList().get(0).equals(kindergarten))
-                        .collect(Collectors.toList());
+                final List<ChildModel> childrenForThisGarden = filteredChildren.stream().filter(child -> child.getWishList().get(0).equals(kindergarten)).collect(Collectors.toList());
                 childrenForThisGarden.addAll(kindergarten.getStudents());// adding previous children, if any
                 final List<ChildModel> acceptedChildren = rankChildrenForKindergarten(kindergarten, childrenForThisGarden);
                 childrenForThisGarden.removeAll(acceptedChildren);
@@ -48,6 +48,7 @@ public class KindergartenServiceImpl implements KindergartenService {
                 }
             });
         } while (!leftoverChildren.isEmpty());
+        rankedChildren.values().forEach(list -> list.forEach(child -> child.setWishList(Collections.emptyList()))); //clearing wishlists of accepted children
         return rankedChildren;
     }
 
@@ -58,11 +59,11 @@ public class KindergartenServiceImpl implements KindergartenService {
 
     private List<ChildModel> rankChildrenForKindergarten(final KindergartenModel kindergarten, final List<ChildModel> childModelList) {
         final Map<Integer, ChildModel> map = new HashMap<>();
-        childModelList.parallelStream().forEach(child ->
-                map.put(calculateChildPoints(kindergarten.getId(), child), child)
-        );
+        childModelList.parallelStream().forEach(child -> map.put(calculateChildPoints(kindergarten.getId(), child), child));
         List<Integer> sortedIds = map.keySet().stream().limit(kindergarten.getPlaces()).sorted().collect(Collectors.toList());
-        return sortedIds.stream().map(map::get).collect(Collectors.toList());
+        final List<ChildModel> acceptedChildren = sortedIds.stream().map(map::get).collect(Collectors.toList());
+        kindergarten.setStudents(acceptedChildren);
+        return acceptedChildren;
     }
 
     private int calculateChildPoints(long kindergartenId, final ChildModel child) {

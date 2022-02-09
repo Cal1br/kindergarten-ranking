@@ -1,4 +1,7 @@
 Feature: Child is accepted into kindergarten by ranking.
+  Background:
+    Given There is a child
+    And There is a kindergarten
 
   Scenario: Child is accepted normally
     Given Child has wishlist
@@ -12,7 +15,7 @@ Feature: Child is accepted into kindergarten by ranking.
 
   Scenario: No wishlist
     Given Child has no wishlist
-    When Rankin is processed
+    When Ranking is processed
     Then Child isn't accepted anywhere
 
   Scenario: No spots
@@ -20,3 +23,6 @@ Feature: Child is accepted into kindergarten by ranking.
     And Kindergarten has no spots
     When Ranking is processed
     Then Child isn't accepted anywhere
+
+
+# таблица в given, с деца, ! така че да се напълни базата един видю

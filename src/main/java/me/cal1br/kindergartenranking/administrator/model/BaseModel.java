@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode
 public abstract class BaseModel {
+    @EqualsAndHashCode.Include
     private Long id;
+    @EqualsAndHashCode.Include
     private String name;
 }
