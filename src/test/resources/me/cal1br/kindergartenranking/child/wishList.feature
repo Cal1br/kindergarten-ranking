@@ -10,8 +10,9 @@ Feature: Child is accepted into kindergarten by ranking.
 
   Scenario: Second wish
     Given Child has wishlist
+    And First wish kindergarten has no spots
     When Ranking is processed
-    Then Child is accepted into second kindergarten
+    Then Child is accepted into a kindergarten
 
   Scenario: No wishlist
     Given Child has no wishlist

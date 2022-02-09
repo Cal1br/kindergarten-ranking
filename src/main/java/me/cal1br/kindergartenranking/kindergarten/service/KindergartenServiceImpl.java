@@ -29,13 +29,12 @@ public class KindergartenServiceImpl extends AbstractBaseServiceImpl<Kindergarte
 
     @Override
     public Map<KindergartenModel, List<ChildModel>> rankChildren(final List<KindergartenModel> kindergartenList, final List<ChildModel> childList) {
-        final List<ChildModel> filteredChildren = childList.stream().filter(child -> !child.getWishList().isEmpty()).collect(Collectors.toList());
         final Map<KindergartenModel, List<ChildModel>> rankedChildren = new HashMap<>();
         final List<ChildModel> leftoverChildren = new LinkedList<>(); // kicknati които влизат отново в класирането
         do {
             leftoverChildren.clear();
             kindergartenList.forEach(kindergarten -> {
-                final List<ChildModel> childrenForThisGarden = filteredChildren.stream().filter(child -> child.getWishList().get(0).equals(kindergarten)).collect(Collectors.toList());
+                final List<ChildModel> childrenForThisGarden = childList.stream().filter(child -> !child.getWishList().isEmpty() && child.getWishList().get(0).equals(kindergarten)).collect(Collectors.toList());
                 childrenForThisGarden.addAll(kindergarten.getStudents());// adding previous children, if any
                 final List<ChildModel> acceptedChildren = rankChildrenForKindergarten(kindergarten, childrenForThisGarden);
                 childrenForThisGarden.removeAll(acceptedChildren);

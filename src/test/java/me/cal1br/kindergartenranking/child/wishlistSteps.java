@@ -83,6 +83,13 @@ public class wishlistSteps {
         assertTrue(childService.findById(child.getId()).getWishList().isEmpty());
     }
 
+    @And("^First wish kindergarten has no spots$")
+    public void firstWishKindergartenHasNoSpots() {
+        final KindergartenModel kindergarten = child.getWishList().get(0);
+        kindergarten.setPlaces(0);
+        kindergartenService.editById(kindergarten.getId(), kindergarten);
+    }
+
     @Given("^Child has wishlist$")
     public void childHasWishlist() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
@@ -115,16 +122,13 @@ public class wishlistSteps {
                 .contains(child));
     }
 
-    @Then("^Child is accepted into second kindergarten$")
-    public void childIsAcceptedIntoSecondKindergarten() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
-
-
     @Given("^Kindergarten has no spots$")
     public void kindergartenHasNoSpots() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        kindergartenRepository.findAll().stream().forEach(kindergarten -> {
+            kindergarten.setPlaces(0);
+            kindergartenService.editById(kindergarten.getId(), kindergarten);
+        });
     }
+
 }
