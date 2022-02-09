@@ -23,5 +23,15 @@ public abstract class AbstractBaseServiceImpl<T extends BaseModel> implements Ba
         return byId.get();
     }
 
+    @Override
+    public long save(final T model) {
+        return getRepository().save(model);
+    }
+
+    @Override
+    public T editById(final Long id, final T model) {
+        return getRepository().editById(id, model);
+    }
+
     protected abstract BaseRepository<T> getRepository();
 }

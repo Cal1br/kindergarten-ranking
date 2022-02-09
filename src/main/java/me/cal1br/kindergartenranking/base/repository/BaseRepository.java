@@ -10,9 +10,9 @@ public interface BaseRepository<T extends BaseModel> {
 
     Optional<T> findById(Long id);
 
+    List<T> findAll();
+
     long save(final T model);
 
     T editById(Long id, T model);
-
-    List<T> findAll();
 }

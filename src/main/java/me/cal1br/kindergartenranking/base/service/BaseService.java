@@ -8,4 +8,8 @@ public interface BaseService<T extends BaseModel> {
     List<T> findAll();
 
     T findById(long id);
+
+    long save(T model);
+
+    T editById(Long id, T model);
 }
