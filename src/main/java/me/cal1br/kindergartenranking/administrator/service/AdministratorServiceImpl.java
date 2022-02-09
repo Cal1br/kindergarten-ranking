@@ -2,12 +2,14 @@ package me.cal1br.kindergartenranking.administrator.service;
 
 import me.cal1br.kindergartenranking.administrator.model.AdministratorModel;
 import me.cal1br.kindergartenranking.administrator.repository.AdministratorRepository;
+import me.cal1br.kindergartenranking.base.repository.BaseRepository;
+import me.cal1br.kindergartenranking.base.service.AbstractBaseServiceImpl;
 import me.cal1br.kindergartenranking.util.exception.InvalidInputException;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Optional;
 
-public class AdministratorServiceImpl implements AdministratorService {
+public class AdministratorServiceImpl extends AbstractBaseServiceImpl<AdministratorModel> implements AdministratorService {
     private static final String INVALID_USERNAME_OR_PASSWORD = "Username or password is invalid!";
     private final AdministratorRepository repository;
 
@@ -24,5 +26,10 @@ public class AdministratorServiceImpl implements AdministratorService {
             return "loginToken";
         }
         return "login failed";
+    }
+
+    @Override
+    protected BaseRepository<AdministratorModel> getRepository() {
+        return repository;
     }
 }

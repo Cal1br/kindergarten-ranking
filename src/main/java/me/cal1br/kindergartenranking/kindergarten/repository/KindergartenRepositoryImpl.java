@@ -4,7 +4,6 @@ import me.cal1br.kindergartenranking.base.repository.AbstractBaseRepositoryImpl;
 import me.cal1br.kindergartenranking.child.model.ChildModel;
 import me.cal1br.kindergartenranking.kindergarten.model.KindergartenModel;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -28,10 +27,5 @@ public class KindergartenRepositoryImpl extends AbstractBaseRepositoryImpl<Kinde
         }
         final KindergartenModel kindergarten = kindergartenOptional.get();
         return kindergarten.getStudents().parallelStream().filter(potentialSibling -> potentialSibling.getParents().equals(child.getParents())).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<KindergartenModel> getAll() {
-        return new ArrayList<>(this.getDatabaseDummy().values());
     }
 }

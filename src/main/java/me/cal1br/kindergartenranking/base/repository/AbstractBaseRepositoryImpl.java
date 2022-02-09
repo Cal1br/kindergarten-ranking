@@ -4,8 +4,10 @@ import me.cal1br.kindergartenranking.administrator.model.BaseModel;
 import me.cal1br.kindergartenranking.util.exception.InvalidInputException;
 import me.cal1br.kindergartenranking.util.exception.InvalidModelException;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,6 +26,14 @@ public abstract class AbstractBaseRepositoryImpl<T extends BaseModel> implements
             throw new InvalidInputException("Id cannot be null");
         }
         return Optional.ofNullable(databaseDummy.get(id));
+    }
+
+    /**
+     * @return returns all of the entries in the repository.
+     */
+    @Override
+    public List<T> findAll() {
+        return new ArrayList<>(this.getDatabaseDummy().values());
     }
 
     /**

@@ -1,5 +1,7 @@
 package me.cal1br.kindergartenranking.kindergarten.service;
 
+import me.cal1br.kindergartenranking.base.repository.BaseRepository;
+import me.cal1br.kindergartenranking.base.service.AbstractBaseServiceImpl;
 import me.cal1br.kindergartenranking.child.model.ChildModel;
 import me.cal1br.kindergartenranking.child.repository.ChildRepository;
 import me.cal1br.kindergartenranking.kindergarten.model.KindergartenModel;
@@ -14,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class KindergartenServiceImpl implements KindergartenService {
+public class KindergartenServiceImpl extends AbstractBaseServiceImpl<KindergartenModel> implements KindergartenService {
     private final ParentRepository parentRepository;
     private final ChildRepository childRepository;
     private final KindergartenRepository kindergartenRepository;
@@ -52,11 +54,6 @@ public class KindergartenServiceImpl implements KindergartenService {
         return rankedChildren;
     }
 
-    @Override
-    public List<KindergartenModel> findAll() {
-        return this.kindergartenRepository.getAll();
-    }
-
     private List<ChildModel> rankChildrenForKindergarten(final KindergartenModel kindergarten, final List<ChildModel> childModelList) {
         final Map<Integer, ChildModel> map = new HashMap<>();
         childModelList.parallelStream().forEach(child -> map.put(calculateChildPoints(kindergarten.getId(), child), child));
@@ -77,5 +74,10 @@ public class KindergartenServiceImpl implements KindergartenService {
         points += twins.size(); //За близнаци 1
         points += kindergartenRepository.getSiblingsOf(kindergartenId, child).size(); //За брат/сестра в детското заведение 1т.
         return points;
+    }
+
+    @Override
+    protected BaseRepository<KindergartenModel> getRepository() {
+        return kindergartenRepository;
     }
 }

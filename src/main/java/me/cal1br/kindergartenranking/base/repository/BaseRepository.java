@@ -2,6 +2,7 @@ package me.cal1br.kindergartenranking.base.repository;
 
 import me.cal1br.kindergartenranking.administrator.model.BaseModel;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface BaseRepository<T extends BaseModel> {
@@ -13,4 +14,5 @@ public interface BaseRepository<T extends BaseModel> {
 
     T editById(Long id, T model);
 
+    List<T> findAll();
 }
