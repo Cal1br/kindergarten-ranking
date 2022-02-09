@@ -37,6 +37,7 @@ public abstract class AbstractBaseRepositoryImpl<T extends BaseModel> implements
         if (!verifyModel(model)) {
             throw new InvalidModelException("Invalid model");
         }
+        model.setId(idCount);
         this.databaseDummy.put(idCount, model);
         return idCount++; //post-increment, thus it returns the correct id
     }
