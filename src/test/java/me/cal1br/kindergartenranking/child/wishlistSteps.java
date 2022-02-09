@@ -34,8 +34,7 @@ import static org.junit.Assert.assertTrue;
 
 public class wishlistSteps {
 
-    private final ChildModel successfulChild = new ChildModel();
-    private final ChildModel noWishlistChild = new ChildModel();
+    private final ChildModel child = new ChildModel();
     //Repositories
     private final KindergartenRepository kindergartenRepository = new KindergartenRepositoryImpl();
     private final ChildRepository childRepository = new ChildRepositoryImpl();
@@ -56,18 +55,15 @@ public class wishlistSteps {
         kindergartenService.save(kindergarten0);
         kindergartenService.save(kindergarten1);
 
-        successfulChild.setName("Artyom");
-        successfulChild.setDateOfBirth(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("UTC")).minusYears(5));
-        noWishlistChild.setName("Bernard");
-        noWishlistChild.setDateOfBirth(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("UTC")).minusYears(4));
+        child.setName("Artyom");
+        child.setDateOfBirth(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("UTC")).minusYears(5));
         //secondWishChild.setName("Charlie");
     }
 
     @Before
     public void setUp() {
-        successfulChild.setWishList(kindergartenService.findAll());
-        childService.save(successfulChild);
-        childService.save(noWishlistChild);
+        child.setWishList(kindergartenService.findAll());
+        childService.save(child);
     }
 
     @Given("^There is a child$")
@@ -82,21 +78,21 @@ public class wishlistSteps {
 
     @Given("^Child has no wishlist$")
     public void childHasNoWishlist() throws Throwable {
-        noWishlistChild.setWishList(Collections.emptyList());
-        childService.editById(noWishlistChild.getId(), noWishlistChild);
-        assertTrue(childService.findById(noWishlistChild.getId()).getWishList().isEmpty());
+        child.setWishList(Collections.emptyList());
+        childService.editById(child.getId(), child);
+        assertTrue(childService.findById(child.getId()).getWishList().isEmpty());
     }
 
     @Given("^Child has wishlist$")
     public void childHasWishlist() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        assertNotNull(successfulChild.getWishList());
-        assertFalse(successfulChild.getWishList().isEmpty());
+        assertNotNull(child.getWishList());
+        assertFalse(child.getWishList().isEmpty());
     }
 
     @When("^Ranking is processed$")
     public void rankingIsProcessed() throws Throwable {
-        rankedChildrenByKG = kindergartenService.rankChildren(kindergartenService.findAll(), Collections.singletonList(successfulChild));
+        rankedChildrenByKG = kindergartenService.rankChildren(kindergartenService.findAll(), Collections.singletonList(child));
         assertNotNull(rankedChildrenByKG.keySet());
         assertNotNull(rankedChildrenByKG.values());
     }
@@ -107,7 +103,7 @@ public class wishlistSteps {
                 .stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList())
-                .contains(successfulChild));
+                .contains(child));
     }
 
     @Then("^Child isn't accepted anywhere$")
@@ -116,7 +112,7 @@ public class wishlistSteps {
                 .stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList())
-                .contains(noWishlistChild));
+                .contains(child));
     }
 
     @Then("^Child is accepted into second kindergarten$")
