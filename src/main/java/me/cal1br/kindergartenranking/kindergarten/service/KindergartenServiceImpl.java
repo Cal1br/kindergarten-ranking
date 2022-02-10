@@ -10,6 +10,7 @@ import me.cal1br.kindergartenranking.parent.model.ParentModel;
 import me.cal1br.kindergartenranking.parent.repository.ParentRepository;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class KindergartenServiceImpl extends AbstractBaseServiceImpl<Kindergarte
     private List<ChildModel> rankChildrenForKindergarten(final KindergartenModel kindergarten, final List<ChildModel> childModelList) {
         final Map<Integer, ChildModel> map = new HashMap<>();
         childModelList.parallelStream().forEach(child -> map.put(calculateChildPoints(kindergarten.getId(), child), child));
-        List<Integer> sortedIds = map.keySet().stream().limit(kindergarten.getPlaces()).sorted().collect(Collectors.toList());
+        List<Integer> sortedIds = map.keySet().stream().sorted(Comparator.reverseOrder()).limit(kindergarten.getPlaces()).collect(Collectors.toList());
         final List<ChildModel> acceptedChildren = sortedIds.stream().map(map::get).collect(Collectors.toList());
         kindergarten.setStudents(acceptedChildren);
         return acceptedChildren;
