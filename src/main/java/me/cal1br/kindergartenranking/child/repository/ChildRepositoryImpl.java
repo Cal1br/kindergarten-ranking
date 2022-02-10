@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class ChildRepositoryImpl extends AbstractBaseRepositoryImpl<ChildModel> implements ChildRepository {
     @Override
     protected boolean verifyModel(final ChildModel model) {
-        if (model.getDateOfBirth().getYear() < 3) {
+        if (model.getDateOfBirth() == null || model.getDateOfBirth().getYear() < 3) {
             return false;
         }
         if (model.getName() == null || model.getName().isEmpty()) {

@@ -1,6 +1,5 @@
 package me.cal1br.kindergartenranking.child;
 
-import cucumber.api.PendingException;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -26,8 +25,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -42,7 +43,6 @@ public class wishlistSteps {
     //Services
     private final KindergartenService kindergartenService = new KindergartenServiceImpl(parentRepository, childRepository, kindergartenRepository);
     private final ChildService childService = new ChildServiceImpl(childRepository);
-    //private final ChildModel secondWishChild = new ChildModel();
     private Map<KindergartenModel, List<ChildModel>> rankedChildrenByKG = new HashMap<>();
 
     {
@@ -57,7 +57,6 @@ public class wishlistSteps {
 
         child.setName("Artyom");
         child.setDateOfBirth(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("UTC")).minusYears(5));
-        //secondWishChild.setName("Charlie");
     }
 
     @Before
@@ -88,6 +87,7 @@ public class wishlistSteps {
         final KindergartenModel kindergarten = child.getWishList().get(0);
         kindergarten.setPlaces(0);
         kindergartenService.editById(kindergarten.getId(), kindergarten);
+        assertEquals(0, kindergarten.getPlaces());
     }
 
     @Given("^Child has wishlist$")
@@ -99,7 +99,7 @@ public class wishlistSteps {
 
     @When("^Ranking is processed$")
     public void rankingIsProcessed() throws Throwable {
-        rankedChildrenByKG = kindergartenService.rankChildren(kindergartenService.findAll(), Collections.singletonList(child));
+        rankedChildrenByKG = kindergartenService.rankChildren(kindergartenService.findAll(), childService.findAll());
         assertNotNull(rankedChildrenByKG.keySet());
         assertNotNull(rankedChildrenByKG.values());
     }
@@ -129,6 +129,36 @@ public class wishlistSteps {
             kindergarten.setPlaces(0);
             kindergartenService.editById(kindergarten.getId(), kindergarten);
         });
+        assertFalse(kindergartenRepository.findAll().stream().anyMatch(kindergartenModel -> kindergartenModel.getPlaces() > 0));
     }
 
+    @Given("^There is a child with disability and a wishlist$")
+    public void thereIsAChildWithDisabilityAndAWishlist() {
+        final ChildModel childWithDisability = new ChildModel();
+        childWithDisability.setName("Bernard");
+        childWithDisability.setDisabled(true);
+        childWithDisability.setWishList(kindergartenService.findAll());
+        childWithDisability.setDateOfBirth(LocalDateTime.ofInstant(Instant.now(), ZoneId.of("UTC")).minusYears(5));
+        childService.save(childWithDisability);
+        assertNotNull(childWithDisability.getWishList());
+        assertFalse(childWithDisability.getWishList().isEmpty());
+    }
+
+
+    @And("^There aren't enough spots for everyone in a given kindergarten$")
+    public void thereArenTEnoughSpotsForEveryoneInAGivenKindergarten() {
+        final Optional<ChildModel> childWithDisability = childService.findAll().stream().filter(ChildModel::isDisabled).findFirst();
+        final KindergartenModel wantedKindergarten = childWithDisability.get().getWishList().get(0);
+        wantedKindergarten.setPlaces(1);
+        kindergartenService.editById(wantedKindergarten.getId(), wantedKindergarten);
+        assertEquals(1, kindergartenService.findById(wantedKindergarten.getId()).getPlaces());
+        assertTrue(kindergartenService.findAll().size() > 1);
+    }
+
+    @Then("^Child with disability gets prioritized$")
+    public void childWithDisabilityGetsPrioritized() {
+        final Optional<ChildModel> childWithDisability = childService.findAll().stream().filter(ChildModel::isDisabled).findFirst();
+        final Optional<KindergartenModel> optionalCovetedKindergarten = kindergartenService.findAll().stream().filter(kindergarten -> kindergarten.getPlaces() == 1).findAny();
+        assertTrue(optionalCovetedKindergarten.get().getStudents().contains(childWithDisability.get()));
+    }
 }
