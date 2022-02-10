@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import me.cal1br.kindergartenranking.base.model.PersonModel;
 import me.cal1br.kindergartenranking.child.model.ChildModel;
 
+import java.util.List;
+
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class ParentModel extends PersonModel {
@@ -12,7 +14,7 @@ public class ParentModel extends PersonModel {
     private String workplace;
     @EqualsAndHashCode.Include
     private String phoneNumber;
-    private ChildModel parentOf;
+    private List<ChildModel> parentOf;
 
     @Override
     public String toString() {
